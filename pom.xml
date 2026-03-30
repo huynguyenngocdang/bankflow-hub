@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- =========================================================
+         PARENT: Spring Boot BOM — inherits dependency management,
+         plugin management, and default build config.
+    ========================================================== -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.0</version>
+        <relativePath/>
+    </parent>
+
+    <!-- =========================================================
+         PROJECT COORDINATES
+         groupId   : your "company" namespace — keep it consistent
+         artifactId: the root module name
+         version   : SNAPSHOT = still in development
+         packaging : pom = this module only aggregates, no JAR
+    ========================================================== -->
+    <groupId>com.bankflow</groupId>
+    <artifactId>bankflow-hub</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>BankFlow Hub — Parent</name>
+    <description>
+        Multi-module microservices project for learning:
+        design patterns, Kafka, multithreading, Conductor,
+        scheduling, PDF generation, and file conversion.
+    </description>
+
+    <!-- =========================================================
+         MODULES — Maven builds these in declaration order.
+         service-registry must start before anything else because
+         all services register with Eureka on startup.
+    ========================================================== -->
+    <modules>
+        <module>service-registry</module>
+        <module>api-gateway</module>
+        <module>account-service</module>
+        <module>transaction-service</module>
+        <module>document-service</module>
+        <module>report-service</module>
+        <module>notification-service</module>
+        <module>scheduler-service</module>
+    </modules>
+
+    <!-- =========================================================
+         GLOBAL PROPERTIES
+         Defined once here — child modules inherit automatically.
+         Never hardcode versions inside child pom.xml files.
+    ========================================================== -->
+    <properties>
+        <!-- Java -->
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Spring Cloud (must match Spring Boot version — check the matrix) -->
+        <!-- Boot 3.3.x → Spring Cloud 2023.0.x -->
+        <spring-cloud.version>2023.0.2</spring-cloud.version>
+
+        <!-- Database -->
+        <postgresql.version>42.7.3</postgresql.version>
+        <flyway.version>10.13.0</flyway.version>
+
+        <!-- Kafka -->
+        <kafka.version>3.7.0</kafka.version>
+
+        <!-- PDF & File -->
+        <itext7.version>8.0.4</itext7.version>
+        <pdfbox.version>3.0.2</pdfbox.version>
+        <poi.version>5.2.5</poi.version>
+
+        <!-- Utilities -->
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <lombok.version>1.18.32</lombok.version>
+        <jjwt.version>0.12.5</jjwt.version>
+        <minio.version>8.5.9</minio.version>
+
+        <!-- Conductor (Netflix OSS workflow engine) -->
+        <conductor.version>3.21.3</conductor.version>
+
+        <!-- Scheduling -->
+        <quartz.version>2.3.2</quartz.version>
+
+        <!-- Testing -->
+        <testcontainers.version>1.19.8</testcontainers.version>
+        <archunit.version>1.3.0</archunit.version>
+    </properties>
+
+    <!-- =========================================================
+         DEPENDENCY MANAGEMENT
+         This section DOES NOT add dependencies to child modules.
+         It only declares versions so children don't need to.
+         Children still must declare what they <dependency> need.
+
+         Why here and not in <dependencies>?
+         → Keeps child modules lean; each only pulls what it needs.
+         → Avoids "fat" services that bundle unused libraries.
+    ========================================================== -->
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- Spring Cloud BOM — manages all spring-cloud-* versions -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Testcontainers BOM -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- ── Database ── -->
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-database-postgresql</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+
+            <!-- ── Kafka ── -->
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+
+            <!-- ── PDF — iText7 Core ── -->
+            <dependency>
+                <groupId>com.itextpdf</groupId>
+                <artifactId>itext7-core</artifactId>
+                <version>${itext7.version}</version>
+                <type>pom</type>
+            </dependency>
+
+            <!-- ── PDF — Apache PDFBox ── -->
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>${pdfbox.version}</version>
+            </dependency>
+
+            <!-- ── Excel — Apache POI ── -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+
+            <!-- ── MinIO (S3-compatible file storage) ── -->
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
+            </dependency>
+
+            <!-- ── JWT ── -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <!-- ── MapStruct (DTO ↔ Entity mapping) ── -->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+
+            <!-- ── Netflix Conductor Client ── -->
+            <dependency>
+                <groupId>com.netflix.conductor</groupId>
+                <artifactId>conductor-client</artifactId>
+                <version>${conductor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.conductor</groupId>
+                <artifactId>conductor-java-sdk</artifactId>
+                <version>${conductor.version}</version>
+            </dependency>
+
+            <!-- ── Quartz Scheduler ── -->
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz.version}</version>
+            </dependency>
+
+            <!-- ── Testing ── -->
+            <dependency>
+                <groupId>com.tngtech.archunit</groupId>
+                <artifactId>archunit-junit5</artifactId>
+                <version>${archunit.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- =========================================================
+         COMMON DEPENDENCIES — added to EVERY child module.
+         Keep this small: only truly universal utilities.
+         Service-specific libs (Kafka, iText, etc.) go in the
+         child pom.xml, not here.
+    ========================================================== -->
+    <dependencies>
+
+        <!-- Lombok: @Getter @Setter @Builder @Slf4j etc. -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Spring Boot Test: JUnit 5 + Mockito + AssertJ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <!-- =========================================================
+         BUILD — plugin config shared across all modules.
+    ========================================================== -->
+    <build>
+        <pluginManagement>
+            <plugins>
+
+                <!-- Compiler plugin: enable Java 21, annotation processing -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>21</source>
+                        <target>21</target>
+                        <!-- Enable virtual threads preview (not needed in Java 21 GA) -->
+                        <compilerArgs>
+                            <arg>--enable-preview</arg>
+                        </compilerArgs>
+                        <!-- Annotation processors: Lombok must come before MapStruct -->
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${mapstruct.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+
+                <!-- Spring Boot plugin: creates executable fat JAR -->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <!-- Exclude Lombok from the final JAR (compile-time only) -->
+                        <excludes>
+                            <exclude>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                            </exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+
+                <!-- Surefire: run JUnit 5 tests -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <argLine>--enable-preview</argLine>
+                    </configuration>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>
