@@ -1,0 +1,54 @@
+# ── Maven ──────────────────────────────────────────
+target/
+*.jar
+*.war
+*.ear
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+
+# ── IntelliJ IDEA ──────────────────────────────────
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ── Eclipse / STS ──────────────────────────────────
+.classpath
+.project
+.settings/
+.springBeans
+
+# ── VS Code ────────────────────────────────────────
+.vscode/
+
+# ── OS files ───────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Spring Boot ────────────────────────────────────
+application-local.yml
+application-local.properties
+
+# ── Secrets / env ──────────────────────────────────
+.env
+*.env
+secrets/
+
+# ── Docker ─────────────────────────────────────────
+docker-compose.override.yml
+
+# ── Logs ───────────────────────────────────────────
+*.log
+logs/
+
+# ── Flyway (generated checksums, not migrations) ───
+**/db/migration/*.resolved
+
+# ── MinIO / file storage (local dev dumps) ─────────
+minio-data/
+
+# ── Redis dump ─────────────────────────────────────
+dump.rdb

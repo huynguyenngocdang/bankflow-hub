@@ -13,7 +13,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.0</version>
+        <version>4.0.5</version>
         <relativePath/>
     </parent>
 
@@ -85,9 +85,6 @@
         <lombok.version>1.18.32</lombok.version>
         <jjwt.version>0.12.5</jjwt.version>
         <minio.version>8.5.9</minio.version>
-
-        <!-- Conductor (Netflix OSS workflow engine) -->
-        <conductor.version>3.21.3</conductor.version>
 
         <!-- Scheduling -->
         <quartz.version>2.3.2</quartz.version>
@@ -207,16 +204,11 @@
                 <version>${mapstruct.version}</version>
             </dependency>
 
-            <!-- ── Netflix Conductor Client ── -->
+            <!-- Orkes Conductor (replaces archived Netflix Conductor) -->
             <dependency>
-                <groupId>com.netflix.conductor</groupId>
-                <artifactId>conductor-client</artifactId>
-                <version>${conductor.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.conductor</groupId>
-                <artifactId>conductor-java-sdk</artifactId>
-                <version>${conductor.version}</version>
+                <groupId>io.orkes.conductor</groupId>
+                <artifactId>orkes-conductor-client-spring</artifactId>
+                <version>4.0.1</version>
             </dependency>
 
             <!-- ── Quartz Scheduler ── -->

@@ -87,8 +87,46 @@
 
         <!-- Conductor: register as a worker for document processing tasks -->
         <dependency>
-            <groupId>com.netflix.conductor</groupId>
-            <artifactId>conductor-client</artifactId>
+            <groupId>io.orkes.conductor</groupId>
+            <artifactId>orkes-conductor-client-spring</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.orkes.conductor</groupId>
+                    <artifactId>conductor-grpc</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.grpc</groupId>
+                    <artifactId>grpc-netty</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.grpc</groupId>
+                    <artifactId>grpc-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.grpc</groupId>
+                    <artifactId>grpc-stub</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.grpc</groupId>
+                    <artifactId>grpc-protobuf</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.grpc</groupId>
+                    <artifactId>grpc-protobuf-lite</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.grpc</groupId>
+                    <artifactId>grpc-context</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.grpc</groupId>
+                    <artifactId>grpc-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.grpc</groupId>
+                    <artifactId>grpc-util</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Validation -->
